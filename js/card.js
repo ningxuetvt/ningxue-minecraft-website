@@ -143,10 +143,11 @@ document.addEventListener('DOMContentLoaded', () => {
         dragging = false;
         if (moved) {
             lastDragEnd = Date.now();        // 拖动过则记录时间，抑制尾随 click
-            // 松手前已长时间停顿（>100ms）则视为主动停住，不给惯性
-            if (performance.now() - lastMoveT > 100) {
-                velX = 0; velY = 0;
-            }
+            // 停顿越久惯性越弱：停顿 300ms 以上才完全停住，避免"拖完顿一下松手"时惯性消失
+            const idle = performance.now() - lastMoveT;
+            const keep = Math.max(0, 1 - idle / 300);
+            velX *= keep;
+            velY *= keep;
             startInertia();
         }
         card.classList.remove('dragging');
