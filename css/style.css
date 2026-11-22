@@ -529,9 +529,43 @@ body{
 /* ---------- 响应式 ---------- */
 @media (max-width:640px){
     body{ font-size:12px; }
+    /* 导航收紧，尽量让 4 个入口一行放下 */
+    .mc-nav{ padding:8px 6px; gap:3px; }
+    .mc-nav a{ padding:8px 9px; font-size:12px; }
     .mc-wrap{ padding:0 8px; }
     .mc-panel{ padding:16px 12px 22px; }
-    .mc-title{ font-size:24px; }
-    .photo-grid{ border-spacing:16px; }
+    .mc-title{ font-size:22px; margin-bottom:16px; }
+    .mc-subtitle{ font-size:16px; }
+    .hint{ font-size:12px; }
+    .about-block{ gap:16px; }
+    .avatar-frame img{ width:140px; height:140px; }
+    .qr-frame{ width:200px; }
+    .qr-frame img{ width:176px; height:176px; }
+    .music-row{ gap:12px; padding:8px 10px; }
+    .track-name{ font-size:14px; }
+    /* 书架：12 本书一行放不下，改为可左右滑动，全部可见 */
+    .bookshelf{
+        overflow-x:auto;
+        overflow-y:hidden;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:thin;
+    }
+    /* 九宫格：缩小展示框，让 3 列在窄屏完整放下 */
+    .photo-grid{ border-spacing:10px; }
+    .photo-grid .item-frame{ width:104px; height:104px; }
+    .photo-grid .item-frame img{ width:80px; height:80px; }
     .card-stage{ width:min(84vw,360px); height:min(84vw,360px); }
+}
+/* 更窄的屏幕（如小屏安卓）再收一档 */
+@media (max-width:380px){
+    .photo-grid{ border-spacing:8px; }
+    .photo-grid .item-frame{ width:88px; height:88px; }
+    .photo-grid .item-frame img{ width:64px; height:64px; }
+}
+/* 触屏设备没有 hover：禁用缩放残留，点击体验更干净 */
+@media (hover:none){
+    .photo-cell:hover .item-frame{
+        transform:none;
+        box-shadow:inset 0 0 0 2px #7d5f30, inset 0 0 0 4px #c9a76a, 0 2px 0 #5a4423;
+    }
 }
