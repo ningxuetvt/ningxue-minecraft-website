@@ -313,7 +313,7 @@ body{
 }
 
 /* ============================================================
-   小说：书架 + 书本滑出（不放大、不越界）
+   小说：书架 + 悬停书飞出翻转展示封面
    ============================================================ */
 .bookshelf{
     position:relative;
@@ -322,7 +322,7 @@ body{
     gap:8px;
     height:112px;
     padding:8px 14px;
-    overflow:hidden;                    /* 书滑出被裁切，绝不越出书架 */
+    overflow:visible;                   /* 允许封面飞出书架 */
     background-color:#4a2f18;
     background-image:url("../assets/textures/bookshelf.png");
     background-size:auto 100%;
@@ -340,7 +340,7 @@ body{
     border:3px solid #2a103f;
     box-shadow:inset -4px 0 0 rgba(0,0,0,.3), 2px 2px 0 rgba(0,0,0,.5);
     text-decoration:none;
-    transition:transform .35s steps(4,end);  /* 只位移，不缩放 */
+    perspective:760px;                  /* 封面翻出的 3D 透视 */
 }
 .book-a{ background:#6a2c8f; }          /* 神秘复苏：紫 */
 .book-b{ background:#1f6f6b; border-color:#0d3a38; }  /* 诡秘之主：青 */
@@ -355,12 +355,42 @@ body{
 .book-j{ background:#1f2c4a; border-color:#101727; }  /* 悼亡者的归来：墨蓝 */
 .book-k{ background:#6a2c6a; border-color:#3f183f; }  /* 夜的命名术：紫 */
 .book-l{ background:#b5651d; border-color:#7a4210; }  /* 天之炽：橙铜 */
-/* 悬停：向右滑出一点 + 轻微上浮，绝不放大 */
+/* 悬停：书脊留在原位，封面从书中飞出、翻转正对观众 */
 .book:hover,.book:focus-visible{
-    transform:translate(9px,-6px);
-    z-index:5;
+    z-index:50;
 }
 .book:focus-visible{ outline:3px solid var(--mc-gold); }
+/* 飞出的封面：初始贴在书脊后方、侧转收拢并隐藏 */
+.book-cover{
+    position:absolute;
+    left:50%;
+    bottom:-6px;
+    width:78px;
+    height:112px;
+    margin-left:-39px;
+    transform-origin:50% 85%;
+    transform:translateY(14px) rotateY(-92deg) scale(.35);
+    opacity:0;
+    pointer-events:none;
+    backface-visibility:hidden;
+    border:3px solid #1c1208;
+    box-shadow:0 12px 22px rgba(0,0,0,.7), 0 0 0 2px #7d5a30, inset 0 0 0 1px rgba(255,255,255,.15);
+    background:#1c1208;
+    transition:transform .42s cubic-bezier(.2,.85,.25,1), opacity .25s ease;
+}
+.book-cover img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    image-rendering:auto;
+}
+/* 悬停/聚焦：封面飞出并翻正，略带倾斜像实体书 */
+.book:hover .book-cover,
+.book:focus-visible .book-cover{
+    transform:translateY(-34px) rotateY(-10deg) rotateZ(-3deg) scale(1);
+    opacity:1;
+}
 .book-spine{
     writing-mode:vertical-rl;           /* 竖排书脊 */
     text-orientation:upright;           /* 中文逐字正立 */
@@ -649,10 +679,16 @@ body{
     .photo-grid .item-frame{ width:88px; height:88px; }
     .photo-grid .item-frame img{ width:64px; height:64px; }
 }
-/* 触屏设备没有 hover：禁用缩放残留，点击体验更干净 */
+/* 触屏设备没有 hover：点击书翻出封面（.is-open 由 bookflip.js 切换） */
 @media (hover:none){
     .photo-cell:hover .item-frame{
         transform:none;
         box-shadow:inset 0 0 0 2px #7d5f30, inset 0 0 0 4px #c9a76a, 0 2px 0 #5a4423;
+    }
+    .book.is-open{ z-index:50; }
+    /* 触屏保持书架横向滑动，封面在书架内翻出（上浮收窄以免被裁） */
+    .book.is-open .book-cover{
+        transform:translateY(-4px) rotateY(-8deg) rotateZ(-2deg) scale(.9);
+        opacity:1;
     }
 }
