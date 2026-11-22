@@ -1,4 +1,4 @@
-/* 卡片展示层：点击图片打开无相框大图，拖动 3D 旋转，双击复位 */
+/* 卡片展示层：点击图片打开无相框大图，拖动 3D 旋转（松手惯性衰减），双击复位 */
 document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('cardOverlay');
     const closeBtn = document.getElementById('cardClose');
@@ -16,11 +16,48 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastDragEnd = 0;              // 上次拖动结束时间，抑制尾随 click 误关闭
     let startX = 0, startY = 0, baseX = 0, baseY = 0;
 
+    // 惯性相关：速度单位 度/毫秒，rAF 逐帧累加并按阻尼衰减
+    let velX = 0, velY = 0;
+    let inertiaRAF = 0;
+    let lastMoveX = 0, lastMoveY = 0, lastMoveT = 0;
+    const FRICTION = 0.94;            // 每 16.67ms 保留的速度比例（越小停得越快）
+
     function applyRotation() {
         card.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
     }
 
+    function stopInertia() {
+        if (inertiaRAF) {
+            cancelAnimationFrame(inertiaRAF);
+            inertiaRAF = 0;
+        }
+    }
+
+    // 松手后：按当前角速度继续转，逐帧减速直到静止
+    function startInertia() {
+        stopInertia();
+        if (Math.abs(velX) < 0.01 && Math.abs(velY) < 0.01) return;
+        let prev = performance.now();
+        function step(now) {
+            const dt = Math.min(now - prev, 50);   // 限制单帧步进，避免切后台回来跳变
+            prev = now;
+            rotX += velX * dt;
+            rotY += velY * dt;
+            const decay = Math.pow(FRICTION, dt / 16.67);
+            velX *= decay;
+            velY *= decay;
+            applyRotation();
+            if (Math.abs(velX) > 0.005 || Math.abs(velY) > 0.005) {
+                inertiaRAF = requestAnimationFrame(step);
+            } else {
+                inertiaRAF = 0;
+            }
+        }
+        inertiaRAF = requestAnimationFrame(step);
+    }
+
     function open(src, name) {
+        stopInertia();
         cardImg.src = src;
         cardImg.alt = name;
         cardName.textContent = name;
@@ -36,11 +73,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function close() {
+        stopInertia();
         overlay.classList.remove('open');
         overlay.setAttribute('aria-hidden', 'true');
     }
 
     function reset() {
+        stopInertia();
         rotX = 0; rotY = 0;
         card.style.transition = 'transform .45s ease-out';
         applyRotation();
@@ -60,12 +99,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // 拖动旋转：监听整个遮罩，从任意位置按下都能拖，移出也不丢失
     overlay.addEventListener('pointerdown', (e) => {
         if (e.target === closeBtn || e.target === resetBtn) return;   // 按钮不触发拖动
+        stopInertia();                       // 重新按下时中断惯性
+        velX = 0; velY = 0;
         dragging = true;
         moved = false;
         startX = e.clientX;
         startY = e.clientY;
         baseX = rotX;
         baseY = rotY;
+        lastMoveX = e.clientX;
+        lastMoveY = e.clientY;
+        lastMoveT = performance.now();
         card.style.transition = 'none';      // 拖动时立即跟手
         card.classList.add('dragging');
     });
@@ -75,6 +119,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const dx = e.clientX - startX;
         const dy = e.clientY - startY;
         if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
+
+        // 采样本次移动的瞬时角速度（度/毫秒），指数平滑避免抖动
+        const now = performance.now();
+        const dt = now - lastMoveT;
+        if (dt > 0) {
+            const instY = ((e.clientX - lastMoveX) * 0.5) / dt;   // 横向 -> Y 轴
+            const instX = (-(e.clientY - lastMoveY) * 0.5) / dt;  // 纵向 -> X 轴
+            velY = velY * 0.35 + instY * 0.65;
+            velX = velX * 0.35 + instX * 0.65;
+        }
+        lastMoveX = e.clientX;
+        lastMoveY = e.clientY;
+        lastMoveT = now;
+
         rotY = baseY + dx * 0.5;             // 横向拖 -> 绕 Y 轴转（不限制，可整圈翻）
         rotX = baseX - dy * 0.5;             // 纵向拖 -> 绕 X 轴转（不限制，可从上方翻到背面）
         applyRotation();
@@ -83,11 +141,19 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('pointerup', () => {
         if (!dragging) return;
         dragging = false;
-        if (moved) lastDragEnd = Date.now();  // 拖动过则记录时间，抑制尾随 click
+        if (moved) {
+            lastDragEnd = Date.now();        // 拖动过则记录时间，抑制尾随 click
+            // 松手前已长时间停顿（>100ms）则视为主动停住，不给惯性
+            if (performance.now() - lastMoveT > 100) {
+                velX = 0; velY = 0;
+            }
+            startInertia();
+        }
         card.classList.remove('dragging');
     });
     window.addEventListener('pointercancel', () => {
         dragging = false;
+        stopInertia();
         card.classList.remove('dragging');
     });
 
