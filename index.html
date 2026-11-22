@@ -9,7 +9,6 @@
 </head>
 <body>
 
-<!-- 顶部导航 -->
 <nav class="mc-nav">
     <a href="#a1">1. 关于我</a>
     <a href="#a2">2. 我的爱好</a>
@@ -19,7 +18,6 @@
 
 <div class="mc-wrap">
 
-    <!-- 关于我 -->
     <section class="mc-panel" id="a1">
         <h1 class="mc-title">关于我</h1>
         <div class="about-block">
@@ -33,11 +31,9 @@
         </div>
     </section>
 
-    <!-- 我的爱好 -->
     <section class="mc-panel" id="a2">
         <h1 class="mc-title">我的爱好</h1>
 
-        <!-- 音乐：唱片滑入唱片机 -->
         <h2 class="mc-subtitle">♫ 爱听的音乐</h2>
         <p class="hint">点一下唱片播放，再点一下暂停</p>
         <ul class="music-list">
@@ -67,7 +63,6 @@
             </li>
         </ul>
 
-        <!-- 小说：书架 + 书本滑出 -->
         <h2 class="mc-subtitle">📖 爱看的小说</h2>
         <p class="hint">电脑上移过书脊会滑出来，手机上左右滑动书架，点一下书就能打开</p>
         <div class="bookshelf" role="list">
@@ -109,7 +104,6 @@
             </a>
         </div>
 
-        <!-- 游戏角色：物品展示框 + hover 放大 + 点击进卡片 -->
         <h2 class="mc-subtitle">⚔ 喜欢的游戏角色</h2>
         <p class="hint">移上去放大</p>
         <table class="photo-grid">
@@ -131,7 +125,6 @@
         </table>
     </section>
 
-    <!-- 交友 -->
     <section class="mc-panel" id="a3">
         <h1 class="mc-title">交友</h1>
         <h2 class="mc-subtitle">我的 IG</h2>
@@ -140,7 +133,6 @@
         </div>
     </section>
 
-    <!-- 分享 -->
     <section class="mc-panel" id="a4">
         <h1 class="mc-title">分享</h1>
         <h2 class="mc-subtitle">我的世界是一款非常棒的游戏，力推</h2>
@@ -148,7 +140,6 @@
 
 </div>
 
-<!-- 卡片展示层：点击图片后打开，可拖动 3D 旋转 -->
 <div class="card-overlay" id="cardOverlay" aria-hidden="true">
     <button type="button" class="card-close" id="cardClose" aria-label="关闭卡片">×</button>
     <button type="button" class="card-reset" id="cardReset" aria-label="复位卡片">复位</button>
@@ -164,7 +155,6 @@
                 <div class="back-line"></div>
                 <div class="back-sub">凝雪的收藏</div>
             </div>
-            <!-- 薄盒的四个侧面：保证转到任意角度都有内容，不会消失 -->
             <div class="flip-edge edge-top"></div>
             <div class="flip-edge edge-bottom"></div>
             <div class="flip-edge edge-left"></div>
