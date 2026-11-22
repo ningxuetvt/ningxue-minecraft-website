@@ -559,6 +559,57 @@ body{
 .back-line{ width:60%; height:3px; background:var(--mc-gold); box-shadow:0 2px 0 #1a1a1a; }
 .back-sub{ font-family:"Zpix",sans-serif; font-size:13px; color:#c9c9c9; text-shadow:1px 1px 0 #000; }
 
+/* ---------- 底部跳转链接 + 返回顶端按钮 ---------- */
+/* 交友栏长文案：允许换行、行高收紧 */
+.mc-subtitle-long{ line-height:1.6; word-break:break-word; }
+/* 底部「返回小组首页」链接 */
+.footer-links{
+    margin-top:26px;
+    padding-top:18px;
+    border-top:4px solid #4f4f4f;
+    text-align:center;
+}
+.footer-link{
+    display:inline-block;
+    padding:11px 18px;
+    font-family:"Zpix",sans-serif;
+    font-size:15px;
+    color:var(--mc-gold);
+    text-decoration:none;
+    background:#3f8f3f;
+    border:3px solid;
+    border-color:#8fe08f #2b5a2b #2b5a2b #8fe08f;
+    text-shadow:2px 2px 0 #204020;
+    transition:background .12s,color .12s,transform .12s;
+}
+.footer-link:hover{ background:#57b357; color:#fff; transform:translateY(-2px); }
+/* 右下角返回顶端按钮：默认隐藏，滚动一段后由 JS 显示 */
+.back-to-top{
+    position:fixed;
+    right:22px;
+    bottom:22px;
+    z-index:60;
+    display:none;
+    width:52px;
+    height:52px;
+    font-family:"Zpix",sans-serif;
+    font-size:26px;
+    line-height:1;
+    color:var(--mc-gold);
+    cursor:pointer;
+    background-color:#6b6b6b;
+    background-image:url("../assets/textures/stone_bricks.png");
+    background-size:26px 26px;
+    border:3px solid;
+    border-color:#a9a9a9 #4f4f4f #4f4f4f #a9a9a9;
+    box-shadow:inset 0 0 0 2px #8a8a8a, 0 4px 0 rgba(0,0,0,.5);
+    text-shadow:2px 2px 0 #2b2b2b;
+    transition:transform .12s,background .12s;
+}
+.back-to-top.show{ display:block; }
+.back-to-top:hover{ background-color:#8d8d8d; color:#fff; transform:translateY(-2px); }
+.back-to-top:active{ transform:translateY(1px); }
+
 /* ---------- 响应式 ---------- */
 @media (max-width:640px){
     body{ font-size:12px; }
