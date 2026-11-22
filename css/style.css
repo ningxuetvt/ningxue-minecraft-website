@@ -48,6 +48,39 @@ body{
     image-rendering:pixelated;
 }
 
+/* ---------- 顶部快捷跳转栏（外链）---------- */
+.quick-nav{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    justify-content:center;
+    padding:10px 12px;
+    background-color:var(--mc-dirt);
+    background-image:url("../assets/textures/oak_planks.png");
+    background-size:48px 48px;
+    border-bottom:4px solid #5a4423;
+    box-shadow:0 4px 0 rgba(0,0,0,.5);
+}
+.quick-nav a{
+    display:inline-block;
+    padding:9px 12px;
+    font-family:"Zpix",sans-serif;
+    font-size:13px;
+    color:var(--mc-gold);
+    text-decoration:none;
+    background:#3f8f3f;                 /* 绿宝石绿，区别下方石砖导航 */
+    border:3px solid;
+    border-color:#8fe08f #2b5a2b #2b5a2b #8fe08f;
+    text-shadow:2px 2px 0 #204020;
+    transition:background .12s,color .12s,transform .12s;
+}
+.quick-nav a:hover{
+    background:#57b357;
+    color:#fff;
+    transform:translateY(-2px);
+}
+.quick-nav a:active{ transform:translateY(1px); }
+
 /* ---------- 顶部导航 ---------- */
 .mc-nav{
     position:sticky;
@@ -532,6 +565,9 @@ body{
     /* 导航收紧，尽量让 4 个入口一行放下 */
     .mc-nav{ padding:8px 6px; gap:3px; }
     .mc-nav a{ padding:8px 9px; font-size:12px; }
+    /* 快捷栏：长标题自动换行、缩小字号 */
+    .quick-nav{ padding:8px 6px; gap:5px; }
+    .quick-nav a{ padding:7px 8px; font-size:11px; }
     .mc-wrap{ padding:0 8px; }
     .mc-panel{ padding:16px 12px 22px; }
     .mc-title{ font-size:22px; margin-bottom:16px; }
