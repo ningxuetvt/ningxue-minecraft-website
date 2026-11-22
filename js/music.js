@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const track = btn.dataset.track || '';
         if (on) {
             row.classList.add('playing');
-            btn.setAttribute('aria-label', '暂停 ' + track);
+            btn.setAttribute('aria-label', '暫停 ' + track);
         } else {
             row.classList.remove('playing');
             btn.setAttribute('aria-label', '播放 ' + track);
