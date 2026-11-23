@@ -356,18 +356,22 @@ body{
 .book-j{ background:#1f2c4a; border-color:#101727; }  /* 悼亡者的归来：墨蓝 */
 .book-k{ background:#6a2c6a; border-color:#3f183f; }  /* 夜的命名术：紫 */
 .book-l{ background:#b5651d; border-color:#7a4210; }  /* 天之炽：橙铜 */
-/* 悬停：书脊淡出隐藏，像整本书被抽出飞走，只剩翻正的封面 */
-.book:hover,.book:focus-visible{
-    z-index:50;
-    background:transparent !important;
-    border-color:transparent;
-    box-shadow:none;
-}
-.book:hover .book-spine,
-.book:focus-visible .book-spine{
-    opacity:0;
-}
+/* 焦点描边：所有尺寸保留 */
 .book:focus-visible{ outline:3px solid var(--mc-gold); }
+/* 宽屏桌面：原书 hover/focus 飞出。窄屏由浮层克隆接管，这里隔离掉，
+   避免触屏粘滞 :hover 在 overflow-y:hidden 的书架里露出半截被裁封面 */
+@media (min-width:641px){
+    .book:hover,.book:focus-visible{
+        z-index:50;
+        background:transparent !important;
+        border-color:transparent;
+        box-shadow:none;
+    }
+    .book:hover .book-spine,
+    .book:focus-visible .book-spine{
+        opacity:0;
+    }
+}
 /* 飞出的封面：初始贴在书脊后方、侧转收拢并隐藏 */
 .book-cover{
     position:absolute;
@@ -393,11 +397,14 @@ body{
     object-fit:cover;
     image-rendering:auto;
 }
-/* 悬停/聚焦：封面飞出并翻正，放大 30%，略带倾斜像实体书 */
-.book:hover .book-cover,
-.book:focus-visible .book-cover{
-    transform:translateY(-46px) rotateY(-10deg) rotateZ(-3deg) scale(1.3);
-    opacity:1;
+/* 宽屏桌面：封面飞出并翻正，放大 30%，略带倾斜像实体书。
+   窄屏不注册该规则，.book-cover 保持初始收拢隐藏，浮层克隆是唯一飞出通道 */
+@media (min-width:641px){
+    .book:hover .book-cover,
+    .book:focus-visible .book-cover{
+        transform:translateY(-46px) rotateY(-10deg) rotateZ(-3deg) scale(1.3);
+        opacity:1;
+    }
 }
 /* 窄屏封面飞出上层：不受书架滚动裁切，复刻桌面 hover 的封面样式 */
 .flying-layer{
@@ -712,17 +719,10 @@ body{
     .photo-grid .item-frame{ width:88px; height:88px; }
     .photo-grid .item-frame img{ width:64px; height:64px; }
 }
-/* 触屏设备没有 hover：点击书翻出封面（.is-open 由 bookflip.js 切换） */
+/* 触屏只中和九宫格 hover 放大；书架封面飞出由 bookflip.js 浮层克隆统一接管 */
 @media (hover:none){
     .photo-cell:hover .item-frame{
         transform:none;
         box-shadow:inset 0 0 0 2px #7d5f30, inset 0 0 0 4px #c9a76a, 0 2px 0 #5a4423;
-    }
-    .book.is-open{ z-index:50; background:transparent !important; border-color:transparent; box-shadow:none; }
-    .book.is-open .book-spine{ opacity:0; }
-    /* 触屏保持书架横向滑动，封面在书架内翻出并放大（上浮收窄以免被裁） */
-    .book.is-open .book-cover{
-        transform:translateY(-12px) rotateY(-8deg) rotateZ(-2deg) scale(1.17);
-        opacity:1;
     }
 }
