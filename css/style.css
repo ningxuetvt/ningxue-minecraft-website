@@ -329,6 +329,12 @@ body{
     border:4px solid #3b2410;
     box-shadow:inset 0 0 0 3px #6b4a2a, 0 5px 0 rgba(0,0,0,.4);
 }
+/* 窄屏横向滑动时，一旦有书被悬停/翻开就临时取消裁切，让飞出的封面完整显示 */
+.bookshelf:has(.book:hover),
+.bookshelf:has(.book:focus-visible),
+.bookshelf:has(.book.is-open){
+    overflow:visible !important;
+}
 .book{
     position:relative;
     flex:none;

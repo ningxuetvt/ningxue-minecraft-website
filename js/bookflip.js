@@ -1,7 +1,7 @@
 // 书架封面翻转：桌面端靠 CSS :hover；触屏设备改为点一下翻出封面，再点一下才打开链接
 (function () {
     var canHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
-    if (canHover) return;
+    if (canHover) return;   // 桌面端保留 hover 飞出效果
 
     var books = document.querySelectorAll('.book');
     var active = null;
