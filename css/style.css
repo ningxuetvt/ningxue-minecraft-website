@@ -38,6 +38,9 @@ body{
     background-color:var(--mc-green);
     background-image:url("../assets/textures/grass_block_top.png");
     background-size:64px 64px;
+    /* 这张贴图本身是灰度（#B3B3B3），直接铺会把绿色底盖死。
+       multiply 让底色透上来，草地才是绿的。 */
+    background-blend-mode:multiply;
     image-rendering:pixelated;
     -webkit-font-smoothing:none;
 }
@@ -80,6 +83,82 @@ body{
     transform:translateY(-2px);
 }
 .quick-nav a:active{ transform:translateY(1px); }
+
+/* ---------- 選單版：把 5 個外鏈收進一個下拉 ---------- */
+.member-menu{ position:relative; }
+.member-toggle{
+    display:inline-block;
+    padding:9px 12px;
+    font-family:"Zpix",sans-serif;
+    font-size:13px;
+    color:var(--mc-gold);
+    cursor:pointer;
+    background:#3f8f3f;
+    border:3px solid;
+    border-color:#8fe08f #2b5a2b #2b5a2b #8fe08f;
+    text-shadow:2px 2px 0 #204020;
+    transition:background .12s,color .12s,transform .12s;
+}
+.member-toggle:hover{ background:#57b357; color:#fff; transform:translateY(-2px); }
+.member-toggle:active{ transform:translateY(1px); }
+.member-toggle .caret{ display:inline-block; transition:transform .15s; }
+.member-menu.is-open .member-toggle .caret{ transform:rotate(180deg); }
+
+.member-list{
+    position:absolute;
+    top:calc(100% + 8px);
+    left:50%;
+    transform:translateX(-50%);
+    z-index:80;
+    display:none;
+    min-width:238px;
+    margin:0;
+    padding:8px;
+    list-style:none;
+    /* 石砖贴图压暗当底，金色字才立得起来 */
+    background-color:#333333;
+    background-image:url("../assets/textures/stone_bricks.png");
+    background-blend-mode:multiply;
+    background-size:48px 48px;
+    border:3px solid;
+    border-color:#9a9a9a #1e1e1e #1e1e1e #9a9a9a;
+    box-shadow:0 6px 0 rgba(0,0,0,.5), 0 0 0 2px rgba(0,0,0,.4);
+}
+.member-menu.is-open .member-list{ display:block; }
+
+/* 覆盖 .quick-nav a 的绿色按钮样式：菜单项是安静的列表行 */
+.member-list a{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:9px 10px;
+    font-family:"Zpix",sans-serif;
+    font-size:13px;
+    color:var(--mc-gold);
+    text-decoration:none;
+    background:transparent;
+    border:0;
+    text-shadow:2px 2px 0 #2b2b2b;
+    transform:none;
+}
+.member-list a:hover,
+.member-list a:focus-visible{ background:#6b6b6b; color:#fff; transform:none; outline:none; }
+.member-list a .tag{
+    font-size:11px;
+    color:#cfcfcf;
+    text-shadow:none;
+    white-space:nowrap;
+}
+.member-note{
+    margin-top:4px;
+    padding:7px 10px 4px;
+    font-family:"Zpix",sans-serif;
+    font-size:11px;
+    color:#bdbdbd;
+    text-shadow:1px 1px 0 #2b2b2b;
+    border-top:2px solid rgba(255,255,255,.12);
+}
 
 /* ---------- 顶部导航 ---------- */
 .mc-nav{
@@ -129,7 +208,7 @@ body{
     background-size:128px 128px;
     border:4px solid var(--mc-dark);
     box-shadow:inset 0 0 0 4px #9a9a9a, 0 6px 0 rgba(0,0,0,.4);
-    scroll-margin-top:78px;
+    scroll-margin-top:92px;             /* 吸顶导航实测 80px，多留 12px 呼吸空间 */
 }
 .mc-title{
     margin:0 0 22px;
@@ -165,7 +244,7 @@ body{
     flex-wrap:wrap;
 }
 .about-text{ flex:1; min-width:240px; font-family:"Zpix",sans-serif; font-size:15px; }
-.about-text h3{ color:var(--mc-gold); font-size:18px; margin:0 0 4px; }
+.about-text .about-name{ color:var(--mc-gold); font-size:18px; margin:0 0 4px; }
 .about-text p{ margin:4px 0; }
 
 /* ---------- 物品展示框（头像 / IG / 照片通用）----------
@@ -198,119 +277,159 @@ body{
 .qr-frame img{ width:200px; height:200px; }
 
 /* ============================================================
-   音乐：唱片滑入唱片机 + 点击本地播放
+   音乐：三台唱片机并排。点一下播放，再点一下暂停。
+   状态写在 .track 上：is-playing / is-paused / is-loading
    ============================================================ */
-.music-list{
-    list-style:none;
+.track-grid{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:12px;
     margin:0;
-    padding:0;
 }
-.music-row{
+.track{
     display:flex;
-    align-items:center;
-    gap:18px;
-    padding:10px 14px;
-    margin-bottom:8px;
+    flex-direction:column;
+    gap:10px;
+    padding:12px;
+    text-align:left;
+    font:inherit;
+    color:inherit;
+    cursor:pointer;
     background-color:#6b6b6b;
     background-image:url("../assets/textures/oak_planks.png");
     background-size:48px 48px;
     border:3px solid #4f4f4f;
-    box-shadow:inset 0 0 0 2px #9a9a9a;
+    box-shadow:inset 0 0 0 2px #9a9a9a, 0 3px 0 rgba(0,0,0,.45);
+    transition:border-color .15s, box-shadow .15s, transform .12s;
 }
-/* 固定点击热区：动画只动内部视觉元素，热区不跑偏（button 需重置默认外观） */
-.disc-scene{
-    position:relative;
-    display:inline-block;
-    flex:none;
-    width:72px;
-    height:96px;
-    cursor:pointer;
-    padding:0;
-    border:0;
-    background:transparent;
-    font:inherit;
-}
-/* 唱片机：贴在场景底部，用侧面贴图 */
-.jukebox{
-    position:absolute;
-    left:4px;
-    bottom:0;
-    width:64px;
-    height:48px;
-    background:url("../assets/textures/jukebox_side.png") center/100% 100% no-repeat;
-    pointer-events:none;
-}
-/* 唱片：用 MC 原版唱片贴图，三首歌各选一张标签颜色匹配封面的唱片 */
-.disc{
-    position:absolute;
-    left:16px;
-    top:0;
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    background:url("../assets/textures/disc_mall.png") center/cover no-repeat;
-    pointer-events:none;
-    /* 透明度延迟 0.45s，先看唱片滑入，再隐藏图标 */
-    transition:transform .5s steps(6,end), opacity .15s .45s;
-    transform-origin:center center;
-    filter:drop-shadow(2px 3px 0 rgba(0,0,0,.5));
-}
-/* 按封面主色挑选的原版唱片：紫 / 橙红 / 青绿 */
-.disc-onelastkiss .disc{ background-image:url("../assets/textures/disc_blocks.png"); }
-.disc-jealousy .disc{ background-image:url("../assets/textures/disc_otherside.png"); }
-/* 悬停/键盘聚焦：唱片旋转落入唱片机后淡出，表示进入机器内部 */
-.disc-scene:hover .disc,
-.disc-scene:focus-visible .disc{
-    transform:translate(0,44px) rotate(360deg);
-    opacity:0;                          /* 进入唱片机后隐藏唱片图标 */
-}
-.disc-scene:focus-visible{ outline:3px solid var(--mc-gold); outline-offset:3px; }
-/* 播放中：唱片留在机器内，歌名高亮 + 跳动的均衡器 */
-.music-row.playing .disc{
-    transform:translate(0,44px) rotate(360deg);
-    opacity:0;
-}
-.music-row.playing{
+.track:hover{ transform:translateY(-2px); }
+.track:active{ transform:translateY(1px); }
+.track:focus-visible{ outline:3px solid var(--mc-gold); outline-offset:3px; }
+.track.is-playing{
     border-color:var(--mc-gold);
     box-shadow:inset 0 0 0 2px #9a9a9a, 0 0 14px rgba(255,215,0,.45);
 }
-.music-row.playing .track-name{
-    color:#fff;
-    text-shadow:0 0 8px var(--mc-gold), 2px 2px 0 #3f3f3f;
+
+/* 唱片机 + 唱片：唱片悬在机器上方，拉开间距，落下时触碰机器才淡出 */
+.scene{
+    position:relative;
+    display:block;
+    width:84px;
+    height:116px;                       /* 加高场景，给唱片与机器之间留出下落空间 */
+    margin:0 auto;
 }
-/* 均衡器：默认隐藏，播放时在唱片机上方跳动 */
-.equalizer{
+.jukebox{
     position:absolute;
-    left:26px;
-    top:38px;
+    left:10px;
+    bottom:0;
+    width:64px;
+    height:48px;                        /* 机器顶部在 y=68 */
+    z-index:1;
+    background:url("../assets/textures/jukebox_side.png") center/100% 100% no-repeat;
+    image-rendering:pixelated;
+    pointer-events:none;
+}
+.disc{
+    position:absolute;
+    left:19px;
+    top:4px;                            /* 唱片底部在 y=50，与机器顶部相距 18px */
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    z-index:2;                          /* 压在机器之上，落入时才盖住机器上沿 */
+    background:url("../assets/textures/disc_mall.png") center/cover no-repeat;
+    image-rendering:pixelated;
+    pointer-events:none;
+    transform-origin:50% 50%;
+    filter:drop-shadow(2px 3px 0 rgba(0,0,0,.55));
+    /* 旋转落下没入机器；淡出延迟到触碰机器后，且拉长消失过程 */
+    transition:transform .65s steps(10,end), opacity .5s .3s;
+}
+/* 三首歌用三张不同标签颜色的原版唱片 */
+.track[data-track="One Last Kiss"] .disc{ background-image:url("../assets/textures/disc_blocks.png"); }
+.track[data-track="My Jealousy"] .disc{ background-image:url("../assets/textures/disc_otherside.png"); }
+/* 判定只在唱片机场景内（非整块木板）：悬停/聚焦/播放中唱片原尺寸旋转落下，触碰机器后慢慢淡出没入 */
+.scene:hover .disc,
+.track:focus-visible .disc,
+.track.is-playing .disc{
+    transform:translate(0,44px) rotate(360deg);
+    opacity:0;
+}
+
+/* 均衡器：播放时在唱片机右侧跳 */
+.eq{
+    position:absolute;
+    right:-4px;
+    top:2px;                            /* 摆在机器右上方，别压在机器贴图上 */
     display:none;
     align-items:flex-end;
     gap:2px;
-    height:22px;
-    pointer-events:none;
+    height:20px;
+    z-index:3;
 }
-.music-row.playing .equalizer{ display:flex; }
-.equalizer i{
+.track.is-playing .eq{ display:flex; }
+.eq i{
     display:block;
     width:3px;
-    height:20%;
+    height:25%;
     background:var(--mc-gold);
     box-shadow:1px 1px 0 #3f3f3f;
     animation:eq-bounce .55s ease-in-out infinite alternate;
 }
-.equalizer i:nth-child(2){ animation-delay:.13s; }
-.equalizer i:nth-child(3){ animation-delay:.26s; }
-.equalizer i:nth-child(4){ animation-delay:.39s; }
-@keyframes eq-bounce{
-    from{ height:20%; }
-    to{ height:100%; }
+.eq i:nth-child(2){ animation-delay:.13s; }
+.eq i:nth-child(3){ animation-delay:.26s; }
+.eq i:nth-child(4){ animation-delay:.39s; }
+@keyframes eq-bounce{ from{ height:25%; } to{ height:100%; } }
+
+.track-body{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    min-width:0;
 }
 .track-name{
     font-family:"Zpix",sans-serif;
     font-size:16px;
+    line-height:1.4;
     color:var(--mc-gold);
     text-shadow:2px 2px 0 #3f3f3f;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
+.track.is-playing .track-name{
+    color:#fff;
+    text-shadow:0 0 8px var(--mc-gold), 2px 2px 0 #3f3f3f;
+}
+
+/* 进度条：凹槽 + 金色填充，宽度由 JS 写 --p */
+.bar{
+    display:block;
+    height:8px;
+    background:#3a3a3a;
+    border:2px solid #2b2b2b;
+    box-shadow:inset 0 0 0 1px #4f4f4f;
+}
+.fill{
+    display:block;
+    height:100%;
+    width:var(--p, 0%);
+    background:var(--mc-gold);
+    box-shadow:0 0 6px rgba(252,238,9,.55);
+    transition:width .15s linear;
+}
+.track-time{
+    display:flex;
+    gap:4px;
+    font-family:"Zpix",sans-serif;
+    font-size:12px;
+    line-height:1.2;
+    color:#e0e0e0;
+    text-shadow:1px 1px 0 #3f3f3f;
+}
+.track.is-loading .cur{ color:var(--mc-gold); }
+.track.is-error .cur{ color:#ff8a7a; }
+
 
 /* ============================================================
    小说：书架 + 悬停书飞出翻转展示封面
@@ -319,6 +438,7 @@ body{
     position:relative;
     display:flex;
     align-items:flex-end;
+    justify-content:center;             /* 12 本书居中摆，别把书架右半边空成一片 */
     gap:8px;
     height:112px;
     padding:8px 14px;
@@ -444,35 +564,45 @@ body{
 .book-spine-xs{ font-size:12px; gap:1px; }
 
 /* ============================================================
-   游戏角色：table 九宫格，展示框 100×100，hover 等比放大到 250×250
+   游戏角色：CSS Grid 九宫格。
+   原来是 table 排版：390px 宽的 iPhone 上要 352px，而面板可用宽只有 342px，
+   margin:auto 退化成 0，右边一列直接贴到边框上。换成 grid 后按列给宽度。
    ============================================================ */
 .photo-grid{
-    border-collapse:separate;
-    border-spacing:30px;                /* 九宫格间距 */
-    margin:10px auto 0;                 /* 居中 */
+    display:grid;
+    grid-template-columns:repeat(3, 124px);
+    gap:30px;                            /* 九宫格间距 */
+    justify-content:center;
+    margin:14px 0 0;
 }
 .photo-cell{
-    position:relative;                  /* 建立层级上下文 */
+    position:relative;
     padding:0;
+    border:0;
+    background:none;
+    font:inherit;
+    cursor:pointer;
+    transform-origin:center center;
+    transition:transform .28s ease-out;
 }
-.photo-cell:hover{ z-index:10; }        /* 放大图压住相邻格 */
-.photo-grid .item-frame{
+.photo-cell:focus-visible{ outline:3px solid var(--mc-gold); outline-offset:4px; }
+.photo-cell .item-frame{
+    display:block;                      /* span 默认行内，不转 block 就只剩一条竖边 */
     width:124px;                        /* 100 照片 + 12×2 木框 */
     height:124px;
-    transform-origin:center center;
-    transition:transform .28s ease-out, box-shadow .28s ease-out;
 }
-.photo-grid .item-frame img{
+.photo-cell .item-frame img{
     width:100px;
     height:100px;
     object-fit:cover;
     display:block;
     /* 照片保持平滑缩放，不加 image-rendering:pixelated */
 }
-/* 展示框连同照片一起等比放大：照片 100 → 250（2.5 倍），木框保持比例 */
-.photo-cell:hover .item-frame{
-    transform:scale(2.5);
-    z-index:10;
+/* 展示框连同照片一起等比放大：100 → 250（2.5 倍），木框保持比例 */
+.photo-cell:hover,
+.photo-cell:focus-visible{ transform:scale(2.5); z-index:10; }
+.photo-cell:hover .item-frame,
+.photo-cell:focus-visible .item-frame{
     box-shadow:0 0 0 4px var(--mc-dark), 0 14px 30px rgba(0,0,0,.65);
 }
 
@@ -627,6 +757,59 @@ body{
 .back-line{ width:60%; height:3px; background:var(--mc-gold); box-shadow:0 2px 0 #1a1a1a; }
 .back-sub{ font-family:"Zpix",sans-serif; font-size:13px; color:#c9c9c9; text-shadow:1px 1px 0 #000; }
 
+/* ---------- 书架：窄屏横滑提示 ---------- */
+.shelf-wrap{ position:relative; }
+/* 提示放在书架下方，别压在书脊上 */
+.shelf-hint{
+    display:none;
+    margin-top:6px;
+    text-align:right;
+    font-family:"Zpix",sans-serif;
+    font-size:11px;
+    color:#f2dd96;
+    text-shadow:1px 1px 0 #2a1a08;
+}
+/* 只在"能横滑、且还没滑过"的时候出现，由 ui.js 挂 .is-idle */
+@media (max-width:640px){
+    .shelf-hint.is-idle{ display:block; }
+}
+
+/* ---------- 交友：二维码 + 可复制的 IG ID ---------- */
+.qr-wrap{
+    display:flex;
+    align-items:center;
+    gap:26px;
+    flex-wrap:wrap;
+    margin-top:14px;
+}
+.qr-side{ flex:1; min-width:200px; font-family:"Zpix",sans-serif; }
+.qr-id{ margin:0 0 10px; font-size:15px; color:#fff; }
+.qr-id b{ color:var(--mc-gold); }
+.copy-btn{
+    display:inline-block;
+    padding:9px 14px;
+    font-family:"Zpix",sans-serif;
+    font-size:13px;
+    color:var(--mc-gold);
+    cursor:pointer;
+    background:#3f8f3f;
+    border:3px solid;
+    border-color:#8fe08f #2b5a2b #2b5a2b #8fe08f;
+    text-shadow:2px 2px 0 #204020;
+    transition:background .12s,color .12s,transform .12s;
+}
+.copy-btn:hover{ background:#57b357; color:#fff; transform:translateY(-2px); }
+.copy-btn:active{ transform:translateY(1px); }
+.copy-btn.done{
+    background:#7a6a1f;
+    border-color:#d7c86a #4a3f10 #4a3f10 #d7c86a;
+    color:#fff;
+}
+.qr-note{ margin:10px 0 0; font-size:12px; color:#dcdcdc; text-shadow:1px 1px 0 #3f3f3f; }
+
+/* ---------- 卡片打开时锁住背景滚动 ---------- */
+body.locked{ overflow:hidden; }
+
 /* ---------- 底部跳转链接 + 返回顶端按钮 ---------- */
 /* 交友栏长文案：允许换行、行高收紧 */
 .mc-subtitle-long{ line-height:1.6; word-break:break-word; }
@@ -687,6 +870,11 @@ body{
     /* 快捷栏：长标题自动换行、缩小字号 */
     .quick-nav{ padding:8px 6px; gap:5px; }
     .quick-nav a{ padding:7px 8px; font-size:11px; }
+    /* 選單版下拉：移动端收窄 */
+    .member-toggle{ padding:7px 10px; font-size:11px; }
+    .member-list{ min-width:0; width:min(252px, calc(100vw - 24px)); }
+    .member-list a{ font-size:12px; padding:8px 8px; }
+    .member-note{ font-size:10px; padding:6px 8px 3px; }
     .mc-wrap{ padding:0 8px; }
     .mc-panel{ padding:16px 12px 22px; }
     .mc-title{ font-size:22px; margin-bottom:16px; }
@@ -696,7 +884,13 @@ body{
     .avatar-frame img{ width:140px; height:140px; }
     .qr-frame{ width:200px; }
     .qr-frame img{ width:176px; height:176px; }
-    .music-row{ gap:12px; padding:8px 10px; }
+    /* 音乐：三张卡片改成横排单列，左机器右信息，比原来三行大木条省 1/4 高度 */
+    .track-grid{ grid-template-columns:1fr; gap:10px; }
+    .track{ flex-direction:row; align-items:center; gap:14px; padding:10px 12px; }
+    .scene{ margin:0; flex:none; width:72px; height:100px; }
+    .jukebox{ width:56px; height:42px; left:8px; }              /* 机器顶部在 y=58 */
+    .disc{ width:40px; height:40px; left:16px; top:2px; }       /* 唱片底部 y=42，相距 16px */
+    .track-body{ flex:1; }
     .track-name{ font-size:14px; }
     /* 书架：保持原尺寸 + 横向滑动；点书飞出由上层浮层接管，不改 overflow，其他书不会被暴露 */
     .bookshelf{
@@ -707,22 +901,29 @@ body{
         -webkit-overflow-scrolling:touch;
         scrollbar-width:thin;
     }
-    /* 九宫格：缩小展示框，让 3 列在窄屏完整放下 */
-    .photo-grid{ border-spacing:10px; }
-    .photo-grid .item-frame{ width:104px; height:104px; }
-    .photo-grid .item-frame img{ width:80px; height:80px; }
+    /* 九宫格：3×96 + 2×14 = 316，390 宽的屏还有余量，不会顶到边框 */
+    .photo-grid{ grid-template-columns:repeat(3, 96px); gap:14px; }
+    .photo-cell .item-frame{ width:96px; height:96px; padding:10px; }
+    .photo-cell .item-frame img{ width:76px; height:76px; }
+    .photo-cell:hover,
+    .photo-cell:focus-visible{ transform:scale(1.9); }
+    /* 交友：二维码与说明竖排居中 */
+    .qr-wrap{ flex-direction:column; gap:14px; text-align:center; }
+    .qr-side{ flex:1 1 auto; min-width:0; }
     .card-stage{ width:min(84vw,360px); height:min(84vw,360px); }
 }
 /* 更窄的屏幕（如小屏安卓）再收一档 */
 @media (max-width:380px){
-    .photo-grid{ border-spacing:8px; }
-    .photo-grid .item-frame{ width:88px; height:88px; }
-    .photo-grid .item-frame img{ width:64px; height:64px; }
+    .photo-grid{ grid-template-columns:repeat(3, 86px); gap:8px; }
+    .photo-cell .item-frame{ width:86px; height:86px; padding:9px; }
+    .photo-cell .item-frame img{ width:66px; height:66px; }
 }
-/* 触屏只中和九宫格 hover 放大；书架封面飞出由 bookflip.js 浮层克隆统一接管 */
+/* 触屏不注册 hover 放大，避免手指点完"粘"在放大状态 */
 @media (hover:none){
-    .photo-cell:hover .item-frame{
-        transform:none;
+    .photo-cell:hover,
+    .photo-cell:focus-visible{ transform:none; }
+    .photo-cell:hover .item-frame,
+    .photo-cell:focus-visible .item-frame{
         box-shadow:inset 0 0 0 2px #7d5f30, inset 0 0 0 4px #c9a76a, 0 2px 0 #5a4423;
     }
 }

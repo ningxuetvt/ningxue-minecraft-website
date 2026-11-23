@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardStage = document.getElementById('cardStage');
     const cardImg = document.getElementById('cardImg');
     const cardName = document.getElementById('cardName');
-    const triggers = document.querySelectorAll('.item-frame[data-photo]');
+    const triggers = document.querySelectorAll('.photo-cell[data-photo]');
     if (!overlay || !card || !triggers.length) return;
 
     let rotX = 0, rotY = 0;           // 当前旋转角度
@@ -56,8 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
         inertiaRAF = requestAnimationFrame(step);
     }
 
-    function open(src, name) {
+    let lastTrigger = null;           // 关闭后把焦点还给点开它的那一格
+
+    function open(src, name, trigger) {
         stopInertia();
+        lastTrigger = trigger || null;
         cardImg.src = src;
         cardImg.alt = name;
         cardName.textContent = name;
@@ -67,6 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // 必须先显示遮罩，才能量到卡片真实宽度（display:none 时 clientWidth 为 0）
         overlay.classList.add('open');
         overlay.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('locked');          // 弹层打开时背景不跟着滚
+        closeBtn.focus({ preventScroll: true });         // 焦点进弹层，Esc 与 Tab 才有着落
         const w = cardStage.clientWidth || 300;
         card.style.setProperty('--w', w + 'px');       // 卡片宽高（正方形）
         card.style.setProperty('--e', '20px');         // 薄盒厚度：正反面相距 20px
@@ -76,6 +81,11 @@ document.addEventListener('DOMContentLoaded', () => {
         stopInertia();
         overlay.classList.remove('open');
         overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('locked');
+        if (lastTrigger) {
+            lastTrigger.focus({ preventScroll: true });
+            lastTrigger = null;
+        }
     }
 
     function reset() {
@@ -85,15 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
         applyRotation();
     }
 
-    // 打开：点击 / 键盘 Enter、空格
+    // 打开：九宫格已经是 <button>，Enter / 空格由浏览器原生派发 click，不必再拦键盘
     triggers.forEach((el) => {
-        el.addEventListener('click', () => open(el.dataset.photo, el.dataset.name));
-        el.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                open(el.dataset.photo, el.dataset.name);
-            }
-        });
+        el.addEventListener('click', () => open(el.dataset.photo, el.dataset.name, el));
     });
 
     // 拖动旋转：监听整个遮罩，从任意位置按下都能拖，移出也不丢失

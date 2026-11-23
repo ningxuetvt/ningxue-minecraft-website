@@ -2,22 +2,47 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
     <title>凝雪的交友網站</title>
-    <link rel="icon" href="assets/photos/avatar.jpg">
+    <meta name="description" content="凝雪的 Minecraft 像素風個人頁：小說書架、唱片機歌單、遊戲角色收藏。歡迎一起聊小說、聊音樂。">
+    <meta name="theme-color" content="#5D9C3C">
+
+    <!-- 分享卡片：IG / Discord / LINE 貼連結時會用到。
+         若之後換了網域，這裡的兩條 og:image 要一起改成新地址的絕對路徑。 -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="凝雪的交友網站">
+    <meta property="og:description" content="小說書架、唱片機歌單、遊戲角色收藏 —— 一起聊小說和音樂。">
+    <meta property="og:image" content="https://ningxuetvt.github.io/ningxue-minecraft-website/assets/photos/og-cover.jpg">
+    <meta property="og:url" content="https://ningxuetvt.github.io/ningxue-minecraft-website/">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" href="assets/photos/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/photos/favicon.png">
+    <!-- 全站中文都靠 Zpix，提前拉取，避免文字先闪一下系统字体 -->
+    <link rel="preload" href="fonts/zpix.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <nav class="quick-nav">
-    <a href="https://chenbaipang080116-dev.github.io/ui-final-project/home.html" target="_blank" rel="noopener noreferrer">首頁</a>
-    <a href="https://chenbaipang080116-dev.github.io/ui-final-project/member1.html" target="_blank" rel="noopener noreferrer">組員1介紹</a>
-    <a href="https://chenbaipang080116-dev.github.io/ui-final-project/15751945/index.html" target="_blank" rel="noopener noreferrer">組員1舊的自我介紹</a>
-    <a href="https://ningxuetvt.github.io/ningxue-minecraft-website/" target="_blank" rel="noopener noreferrer">組員2介紹</a>
-    <a href="https://ningxuetvt.github.io/ningxue-website-original/" target="_blank" rel="noopener noreferrer">組員2舊的自我介紹</a>
+    <div class="member-menu" id="memberMenu">
+        <button type="button" class="member-toggle" id="memberToggle"
+                aria-haspopup="true" aria-expanded="false" aria-controls="memberList">
+            組員介紹 <span class="caret" aria-hidden="true">▾</span>
+        </button>
+        <ul class="member-list" id="memberList" role="menu">
+            <li role="none"><a role="menuitem" href="https://chenbaipang080116-dev.github.io/ui-final-project/home.html">小組首頁</a></li>
+            <li role="none"><a role="menuitem" href="https://chenbaipang080116-dev.github.io/ui-final-project/member1.html">組員1介紹</a></li>
+            <li role="none"><a role="menuitem" href="https://chenbaipang080116-dev.github.io/ui-final-project/15751945/index.html">組員1舊的自我介紹</a></li>
+            <li role="none"><a role="menuitem" href="https://ningxuetvt.github.io/ningxue-minecraft-website/">組員2介紹<span class="tag">線上版</span></a></li>
+            <li role="none"><a role="menuitem" href="https://ningxuetvt.github.io/ningxue-website-original/">組員2舊的自我介紹<span class="tag">舊版</span></a></li>
+            <li role="none" class="member-note">點擊後會在當前頁面開啟</li>
+        </ul>
+    </div>
 </nav>
 
-<nav class="mc-nav">
+<nav class="mc-nav" aria-label="章節導覽">
     <a href="#a1">1. 關於我</a>
     <a href="#a2">2. 我的愛好</a>
     <a href="#a3">3. 交友</a>
@@ -29,10 +54,10 @@
         <h1 class="mc-title">關於我</h1>
         <div class="about-block">
             <div class="item-frame avatar-frame">
-                <img src="assets/photos/avatar.jpg" alt="凝雪的頭像">
+                <img src="assets/photos/avatar.webp" alt="凝雪的頭像" width="180" height="180">
             </div>
             <div class="about-text">
-                <h3>我的名字</h3>
+                <h2 class="about-name">我的名字</h2>
                 <p>我叫黃一鳴,平時喜歡聽歌和看小說</p>
             </div>
         </div>
@@ -42,111 +67,150 @@
         <h1 class="mc-title">我的愛好</h1>
 
         <h2 class="mc-subtitle">♫ 愛聽的音樂</h2>
-        <p class="hint">點一下唱片播放，再點一下暫停</p>
-        <ul class="music-list">
-            <li class="music-row">
-                <button type="button" class="disc-scene disc-laydown" data-src="assets/music/lay_down.mp3" data-track="Lay Down" aria-label="播放 Lay Down">
-                    <span class="jukebox" aria-hidden="true"></span>
-                    <span class="disc" aria-hidden="true"></span>
-                    <span class="equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-                </button>
-                <span class="track-name">Lay Down</span>
-            </li>
-            <li class="music-row">
-                <button type="button" class="disc-scene disc-onelastkiss" data-src="assets/music/one_last_kiss.mp3" data-track="One Last Kiss" aria-label="播放 One Last Kiss">
-                    <span class="jukebox" aria-hidden="true"></span>
-                    <span class="disc" aria-hidden="true"></span>
-                    <span class="equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-                </button>
-                <span class="track-name">One Last Kiss</span>
-            </li>
-            <li class="music-row">
-                <button type="button" class="disc-scene disc-jealousy" data-src="assets/music/my_jealousy.mp3" data-track="My Jealousy" aria-label="播放 My Jealousy">
-                    <span class="jukebox" aria-hidden="true"></span>
-                    <span class="disc" aria-hidden="true"></span>
-                    <span class="equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-                </button>
-                <span class="track-name">My Jealousy</span>
-            </li>
-        </ul>
+        <p class="hint">點一下唱片機播放，再點一下暫停</p>
+
+        <div class="track-grid">
+
+            <button type="button" class="track" data-src="assets/music/lay_down.mp3" data-track="Lay Down" data-dur="189">
+                <span class="scene" aria-hidden="true">
+                    <span class="disc"></span>
+                    <span class="jukebox"></span>
+                    <span class="eq"><i></i><i></i><i></i><i></i></span>
+                </span>
+                <span class="track-body">
+                    <span class="track-name">Lay Down</span>
+                    <span class="bar"><span class="fill"></span></span>
+                    <span class="track-time"><span class="cur">0:00</span><span class="slash">/</span><span class="dur">3:09</span></span>
+                </span>
+            </button>
+
+            <button type="button" class="track" data-src="assets/music/one_last_kiss.mp3" data-track="One Last Kiss" data-dur="252">
+                <span class="scene" aria-hidden="true">
+                    <span class="disc"></span>
+                    <span class="jukebox"></span>
+                    <span class="eq"><i></i><i></i><i></i><i></i></span>
+                </span>
+                <span class="track-body">
+                    <span class="track-name">One Last Kiss</span>
+                    <span class="bar"><span class="fill"></span></span>
+                    <span class="track-time"><span class="cur">0:00</span><span class="slash">/</span><span class="dur">4:12</span></span>
+                </span>
+            </button>
+
+            <button type="button" class="track" data-src="assets/music/my_jealousy.mp3" data-track="My Jealousy" data-dur="176">
+                <span class="scene" aria-hidden="true">
+                    <span class="disc"></span>
+                    <span class="jukebox"></span>
+                    <span class="eq"><i></i><i></i><i></i><i></i></span>
+                </span>
+                <span class="track-body">
+                    <span class="track-name">My Jealousy</span>
+                    <span class="bar"><span class="fill"></span></span>
+                    <span class="track-time"><span class="cur">0:00</span><span class="slash">/</span><span class="dur">2:56</span></span>
+                </span>
+            </button>
+
+        </div>
 
         <h2 class="mc-subtitle">📖 愛看的小說</h2>
-        <div class="bookshelf" role="list">
-            <a class="book book-a" role="listitem" href="https://www.qidian.com/book/1012584111/" target="_blank" rel="noopener noreferrer" title="神秘復甦 - 起點中文網">
-                <span class="book-spine"><i>神</i><i>秘</i><i>復</i><i>甦</i></span>
-                <span class="book-cover"><img src="assets/covers/cover01.jpg" alt="神秘復甦封面" loading="lazy"></span>
-            </a>
-            <a class="book book-b" role="listitem" href="https://www.qidian.com/book/1010868264/" target="_blank" rel="noopener noreferrer" title="詭秘之主 - 起點中文網">
-                <span class="book-spine"><i>詭</i><i>秘</i><i>之</i><i>主</i></span>
-                <span class="book-cover"><img src="assets/covers/cover02.jpg" alt="詭秘之主封面" loading="lazy"></span>
-            </a>
-            <a class="book book-c" role="listitem" href="https://www.qidian.com/book/1036370336/" target="_blank" rel="noopener noreferrer" title="宿命之環 - 起點中文網">
-                <span class="book-spine"><i>宿</i><i>命</i><i>之</i><i>環</i></span>
-                <span class="book-cover"><img src="assets/covers/cover03.jpg" alt="宿命之環封面" loading="lazy"></span>
-            </a>
-            <a class="book book-d" role="listitem" href="https://www.qidian.com/book/1031794030/" target="_blank" rel="noopener noreferrer" title="道詭異仙 - 起點中文網">
-                <span class="book-spine"><i>道</i><i>詭</i><i>異</i><i>仙</i></span>
-                <span class="book-cover"><img src="assets/covers/cover04.jpg" alt="道詭異仙封面" loading="lazy"></span>
-            </a>
-            <a class="book book-e" role="listitem" href="https://www.qidian.com/book/1011945836/" target="_blank" rel="noopener noreferrer" title="火之晨曦 - 起點中文網">
-                <span class="book-spine"><i>火</i><i>之</i><i>晨</i><i>曦</i></span>
-                <span class="book-cover"><img src="assets/covers/cover05.jpg" alt="火之晨曦封面" loading="lazy"></span>
-            </a>
-            <a class="book book-f" role="listitem" href="https://www.qidian.com/book/1011945837/" target="_blank" rel="noopener noreferrer" title="悼亡者之瞳 - 起點中文網">
-                <span class="book-spine book-spine-sm"><i>悼</i><i>亡</i><i>者</i><i>之</i><i>瞳</i></span>
-                <span class="book-cover"><img src="assets/covers/cover06.jpg" alt="悼亡者之瞳封面" loading="lazy"></span>
-            </a>
-            <a class="book book-g" role="listitem" href="https://www.qidian.com/book/1011945838/" target="_blank" rel="noopener noreferrer" title="黑月之潮·上 - 起點中文網">
-                <span class="book-spine book-spine-xs"><i>黑</i><i>月</i><i>之</i><i>潮</i><i>·</i><i>上</i></span>
-                <span class="book-cover"><img src="assets/covers/cover07.jpg" alt="黑月之潮·上封面" loading="lazy"></span>
-            </a>
-            <a class="book book-h" role="listitem" href="https://www.qidian.com/book/1011945840/" target="_blank" rel="noopener noreferrer" title="黑月之潮·下 - 起點中文網">
-                <span class="book-spine book-spine-xs"><i>黑</i><i>月</i><i>之</i><i>潮</i><i>·</i><i>下</i></span>
-                <span class="book-cover"><img src="assets/covers/cover08.jpg" alt="黑月之潮·下封面" loading="lazy"></span>
-            </a>
-            <a class="book book-i" role="listitem" href="https://www.qidian.com/book/1011945841/" target="_blank" rel="noopener noreferrer" title="奧丁之淵 - 起點中文網">
-                <span class="book-spine"><i>奧</i><i>丁</i><i>之</i><i>淵</i></span>
-                <span class="book-cover"><img src="assets/covers/cover09.jpg" alt="奧丁之淵封面" loading="lazy"></span>
-            </a>
-            <a class="book book-j" role="listitem" href="https://www.qidian.com/book/1011945843/" target="_blank" rel="noopener noreferrer" title="悼亡者的歸來 - 起點中文網">
-                <span class="book-spine book-spine-xs"><i>悼</i><i>亡</i><i>者</i><i>的</i><i>歸</i><i>來</i></span>
-                <span class="book-cover"><img src="assets/covers/cover10.jpg" alt="悼亡者的歸來封面" loading="lazy"></span>
-            </a>
-            <a class="book book-k" role="listitem" href="https://www.qidian.com/book/1021617576/" target="_blank" rel="noopener noreferrer" title="夜的命名術 - 起點中文網">
-                <span class="book-spine book-spine-sm"><i>夜</i><i>的</i><i>命</i><i>名</i><i>術</i></span>
-                <span class="book-cover"><img src="assets/covers/cover11.jpg" alt="夜的命名術封面" loading="lazy"></span>
-            </a>
-            <a class="book book-l" role="listitem" href="https://www.qidian.com/book/1011945856/" target="_blank" rel="noopener noreferrer" title="天之熾 - 起點中文網">
-                <span class="book-spine"><i>天</i><i>之</i><i>熾</i></span>
-                <span class="book-cover"><img src="assets/covers/cover12.jpg" alt="天之熾封面" loading="lazy"></span>
-            </a>
+        <div class="shelf-wrap">
+            <div class="bookshelf" role="list">
+                <a class="book book-a" role="listitem" href="https://www.qidian.com/book/1012584111/" target="_blank" rel="noopener noreferrer" title="神秘復甦 - 起點中文網">
+                    <span class="book-spine"><i>神</i><i>秘</i><i>復</i><i>甦</i></span>
+                    <span class="book-cover"><img src="assets/covers/cover01.webp" alt="神秘復甦封面" width="78" height="112" loading="lazy" decoding="async"></span>
+                </a>
+                <a class="book book-b" role="listitem" href="https://www.qidian.com/book/1010868264/" target="_blank" rel="noopener noreferrer" title="詭秘之主 - 起點中文網">
+                    <span class="book-spine"><i>詭</i><i>秘</i><i>之</i><i>主</i></span>
+                    <span class="book-cover"><img src="assets/covers/cover02.webp" alt="詭秘之主封面" width="78" height="112" loading="lazy" decoding="async"></span>
+                </a>
+                <a class="book book-c" role="listitem" href="https://www.qidian.com/book/1036370336/" target="_blank" rel="noopener noreferrer" title="宿命之環 - 起點中文網">
+                    <span class="book-spine"><i>宿</i><i>命</i><i>之</i><i>環</i></span>
+                    <span class="book-cover"><img src="assets/covers/cover03.webp" alt="宿命之環封面" width="78" height="112" loading="lazy" decoding="async"></span>
+                </a>
+                <a class="book book-d" role="listitem" href="https://www.qidian.com/book/1031794030/" target="_blank" rel="noopener noreferrer" title="道詭異仙 - 起點中文網">
+                    <span class="book-spine"><i>道</i><i>詭</i><i>異</i><i>仙</i></span>
+                    <span class="book-cover"><img src="assets/covers/cover04.webp" alt="道詭異仙封面" width="78" height="112" loading="lazy" decoding="async"></span>
+                </a>
+                <a class="book book-e" role="listitem" href="https://www.qidian.com/book/1011945836/" target="_blank" rel="noopener noreferrer" title="火之晨曦 - 起點中文網">
+                    <span class="book-spine"><i>火</i><i>之</i><i>晨</i><i>曦</i></span>
+                    <span class="book-cover"><img src="assets/covers/cover05.webp" alt="火之晨曦封面" width="78" height="112" loading="lazy" decoding="async"></span>
+                </a>
+                <a class="book book-f" role="listitem" href="https://www.qidian.com/book/1011945837/" target="_blank" rel="noopener noreferrer" title="悼亡者之瞳 - 起點中文網">
+                    <span class="book-spine book-spine-sm"><i>悼</i><i>亡</i><i>者</i><i>之</i><i>瞳</i></span>
+                    <span class="book-cover"><img src="assets/covers/cover06.webp" alt="悼亡者之瞳封面" width="78" height="112" loading="lazy" decoding="async"></span>
+                </a>
+                <a class="book book-g" role="listitem" href="https://www.qidian.com/book/1011945838/" target="_blank" rel="noopener noreferrer" title="黑月之潮·上 - 起點中文網">
+                    <span class="book-spine book-spine-xs"><i>黑</i><i>月</i><i>之</i><i>潮</i><i>·</i><i>上</i></span>
+                    <span class="book-cover"><img src="assets/covers/cover07.webp" alt="黑月之潮·上封面" width="78" height="112" loading="lazy" decoding="async"></span>
+                </a>
+                <a class="book book-h" role="listitem" href="https://www.qidian.com/book/1011945840/" target="_blank" rel="noopener noreferrer" title="黑月之潮·下 - 起點中文網">
+                    <span class="book-spine book-spine-xs"><i>黑</i><i>月</i><i>之</i><i>潮</i><i>·</i><i>下</i></span>
+                    <span class="book-cover"><img src="assets/covers/cover08.webp" alt="黑月之潮·下封面" width="78" height="112" loading="lazy" decoding="async"></span>
+                </a>
+                <a class="book book-i" role="listitem" href="https://www.qidian.com/book/1011945841/" target="_blank" rel="noopener noreferrer" title="奧丁之淵 - 起點中文網">
+                    <span class="book-spine"><i>奧</i><i>丁</i><i>之</i><i>淵</i></span>
+                    <span class="book-cover"><img src="assets/covers/cover09.webp" alt="奧丁之淵封面" width="78" height="112" loading="lazy" decoding="async"></span>
+                </a>
+                <a class="book book-j" role="listitem" href="https://www.qidian.com/book/1011945843/" target="_blank" rel="noopener noreferrer" title="悼亡者的歸來 - 起點中文網">
+                    <span class="book-spine book-spine-xs"><i>悼</i><i>亡</i><i>者</i><i>的</i><i>歸</i><i>來</i></span>
+                    <span class="book-cover"><img src="assets/covers/cover10.webp" alt="悼亡者的歸來封面" width="78" height="112" loading="lazy" decoding="async"></span>
+                </a>
+                <a class="book book-k" role="listitem" href="https://www.qidian.com/book/1021617576/" target="_blank" rel="noopener noreferrer" title="夜的命名術 - 起點中文網">
+                    <span class="book-spine book-spine-sm"><i>夜</i><i>的</i><i>命</i><i>名</i><i>術</i></span>
+                    <span class="book-cover"><img src="assets/covers/cover11.webp" alt="夜的命名術封面" width="78" height="112" loading="lazy" decoding="async"></span>
+                </a>
+                <a class="book book-l" role="listitem" href="https://www.qidian.com/book/1011945856/" target="_blank" rel="noopener noreferrer" title="天之熾 - 起點中文網">
+                    <span class="book-spine"><i>天</i><i>之</i><i>熾</i></span>
+                    <span class="book-cover"><img src="assets/covers/cover12.webp" alt="天之熾封面" width="78" height="112" loading="lazy" decoding="async"></span>
+                </a>
+            </div>
+            <span class="shelf-hint" id="shelfHint" aria-hidden="true">左右滑動看更多 ›</span>
         </div>
 
         <h2 class="mc-subtitle"><span class="heart-icon">❤️</span> 喜歡的游戲角色</h2>
-        <table class="photo-grid">
-            <tr>
-                <td class="photo-cell"><div class="item-frame" role="button" tabindex="0" data-photo="assets/photos/photo00.jpg" data-name="雷電將軍"><img src="assets/photos/photo00.jpg" alt="雷電將軍"></div></td>
-                <td class="photo-cell"><div class="item-frame" role="button" tabindex="0" data-photo="assets/photos/photo01.jpg" data-name="黃泉"><img src="assets/photos/photo01.jpg" alt="黃泉"></div></td>
-                <td class="photo-cell"><div class="item-frame" role="button" tabindex="0" data-photo="assets/photos/photo02.jpg" data-name="雷電芽衣"><img src="assets/photos/photo02.jpg" alt="雷電芽衣"></div></td>
-            </tr>
-            <tr>
-                <td class="photo-cell"><div class="item-frame" role="button" tabindex="0" data-photo="assets/photos/photo03.jpg" data-name="阮·梅"><img src="assets/photos/photo03.jpg" alt="阮·梅"></div></td>
-                <td class="photo-cell"><div class="item-frame" role="button" tabindex="0" data-photo="assets/photos/photo04.jpg" data-name="心月狐"><img src="assets/photos/photo04.jpg" alt="心月狐"></div></td>
-                <td class="photo-cell"><div class="item-frame" role="button" tabindex="0" data-photo="assets/photos/photo05.jpg" data-name="緋雪"><img src="assets/photos/photo05.jpg" alt="緋雪"></div></td>
-            </tr>
-            <tr>
-                <td class="photo-cell"><div class="item-frame" role="button" tabindex="0" data-photo="assets/photos/photo06.jpg" data-name="維琳娜"><img src="assets/photos/photo06.jpg" alt="維琳娜"></div></td>
-                <td class="photo-cell"><div class="item-frame" role="button" tabindex="0" data-photo="assets/photos/photo07.jpg" data-name="蕾米埃爾"><img src="assets/photos/photo07.jpg" alt="蕾米埃爾"></div></td>
-                <td class="photo-cell"><div class="item-frame" role="button" tabindex="0" data-photo="assets/photos/photo08.jpg" data-name="卡芙卡"><img src="assets/photos/photo08.jpg" alt="卡芙卡"></div></td>
-            </tr>
-        </table>
+        <div class="photo-grid" id="photoGrid">
+            <button type="button" class="photo-cell" data-photo="assets/photos/photo00-lg.webp" data-name="雷電將軍" aria-label="查看雷電將軍大圖">
+                <span class="item-frame"><img src="assets/photos/photo00.webp" alt="雷電將軍" width="100" height="100" loading="lazy" decoding="async"></span>
+            </button>
+            <button type="button" class="photo-cell" data-photo="assets/photos/photo01-lg.webp" data-name="黃泉" aria-label="查看黃泉大圖">
+                <span class="item-frame"><img src="assets/photos/photo01.webp" alt="黃泉" width="100" height="100" loading="lazy" decoding="async"></span>
+            </button>
+            <button type="button" class="photo-cell" data-photo="assets/photos/photo02-lg.webp" data-name="雷電芽衣" aria-label="查看雷電芽衣大圖">
+                <span class="item-frame"><img src="assets/photos/photo02.webp" alt="雷電芽衣" width="100" height="100" loading="lazy" decoding="async"></span>
+            </button>
+            <button type="button" class="photo-cell" data-photo="assets/photos/photo03-lg.webp" data-name="阮·梅" aria-label="查看阮·梅大圖">
+                <span class="item-frame"><img src="assets/photos/photo03.webp" alt="阮·梅" width="100" height="100" loading="lazy" decoding="async"></span>
+            </button>
+            <button type="button" class="photo-cell" data-photo="assets/photos/photo04-lg.webp" data-name="心月狐" aria-label="查看心月狐大圖">
+                <span class="item-frame"><img src="assets/photos/photo04.webp" alt="心月狐" width="100" height="100" loading="lazy" decoding="async"></span>
+            </button>
+            <button type="button" class="photo-cell" data-photo="assets/photos/photo05-lg.webp" data-name="緋雪" aria-label="查看緋雪大圖">
+                <span class="item-frame"><img src="assets/photos/photo05.webp" alt="緋雪" width="100" height="100" loading="lazy" decoding="async"></span>
+            </button>
+            <button type="button" class="photo-cell" data-photo="assets/photos/photo06-lg.webp" data-name="維琳娜" aria-label="查看維琳娜大圖">
+                <span class="item-frame"><img src="assets/photos/photo06.webp" alt="維琳娜" width="100" height="100" loading="lazy" decoding="async"></span>
+            </button>
+            <button type="button" class="photo-cell" data-photo="assets/photos/photo07-lg.webp" data-name="蕾米埃爾" aria-label="查看蕾米埃爾大圖">
+                <span class="item-frame"><img src="assets/photos/photo07.webp" alt="蕾米埃爾" width="100" height="100" loading="lazy" decoding="async"></span>
+            </button>
+            <button type="button" class="photo-cell" data-photo="assets/photos/photo08-lg.webp" data-name="卡芙卡" aria-label="查看卡芙卡大圖">
+                <span class="item-frame"><img src="assets/photos/photo08.webp" alt="卡芙卡" width="100" height="100" loading="lazy" decoding="async"></span>
+            </button>
+        </div>
     </section>
 
     <section class="mc-panel" id="a3">
         <h1 class="mc-title">交友</h1>
         <h2 class="mc-subtitle mc-subtitle-long">歡迎一起交流小說,音樂的相關話題,可以掃下方的QR code添加我的IG</h2>
-        <div class="item-frame qr-frame">
-            <img src="assets/photos/ig_qr.png" alt="Instagram 二維碼：@NINGXUETVT">
+        <div class="qr-wrap">
+            <div class="item-frame qr-frame">
+                <img src="assets/photos/ig_qr.png" alt="Instagram 二維碼" width="200" height="200" loading="lazy" decoding="async">
+            </div>
+            <div class="qr-side">
+                <p class="qr-id">IG：<b>@NINGXUETVT</b></p>
+                <button type="button" class="copy-btn" id="copyIg" data-copy="NINGXUETVT">複製 IG ID</button>
+                <p class="qr-note">在電腦上打不開相機的話，直接複製 ID 搜尋</p>
+            </div>
         </div>
     </section>
 
@@ -160,7 +224,7 @@
 
 <div class="flying-layer" id="flyingLayer" aria-hidden="true"></div>
 
-<div class="card-overlay" id="cardOverlay" aria-hidden="true">
+<div class="card-overlay" id="cardOverlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="遊戲角色大圖">
     <button type="button" class="card-close" id="cardClose" aria-label="關閉卡片">×</button>
     <button type="button" class="card-reset" id="cardReset" aria-label="復位卡片">復位</button>
     <p class="card-tip">拖動旋轉 · 雙擊/按復位鍵回正 · 點空白處關閉</p>
@@ -188,6 +252,7 @@
 <script src="js/card.js"></script>
 <script src="js/backtotop.js"></script>
 <script src="js/bookflip.js"></script>
+<script src="js/ui.js"></script>
 
 </body>
 </html>
