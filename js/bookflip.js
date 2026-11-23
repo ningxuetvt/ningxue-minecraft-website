@@ -1,28 +1,96 @@
-// 书架封面翻转：桌面端靠 CSS :hover；触屏设备改为点一下翻出封面，再点一下才打开链接
+// 书架封面翻转：桌面宽屏保留 CSS hover；窄屏把封面移到不受滚动裁切的上层播放原版飞出动画
 (function () {
-    var canHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
-    if (canHover) return;   // 桌面端保留 hover 飞出效果
+    var mq = window.matchMedia('(max-width:640px)');
+    if (!mq.matches) return;   // 桌面宽屏：保留原 hover 飞出，不接管
 
+    var layer = document.getElementById('flyingLayer');
     var books = document.querySelectorAll('.book');
     var active = null;
+    var clone = null;
 
+    // 与 CSS 中 .book-cover 一致：78×112，初始贴书脊侧转收拢，飞出后翻正放大 30%
+    var CW = 78, CH = 112;
+    var T_IN = 'perspective(760px) translateY(14px) rotateY(-92deg) scale(.35)';
+    var T_OUT = 'perspective(760px) translateY(-46px) rotateY(-10deg) rotateZ(-3deg) scale(1.3)';
+
+    function fly(book) {
+        if (active === book) return;
+        close();
+        var img = book.querySelector('.book-cover img');
+        if (!img || !layer) return;
+        var r = book.getBoundingClientRect();
+
+        clone = document.createElement('div');
+        clone.className = 'flying-cover';
+        var ci = document.createElement('img');
+        ci.src = img.src;
+        ci.alt = img.alt || '';
+        clone.appendChild(ci);
+
+        // 复刻 .book-cover 相对书脊的位置：left:50% margin-left:-39px; bottom:-6px
+        clone.style.left = (r.left + r.width / 2 - CW / 2) + 'px';
+        clone.style.top = (r.bottom + 6 - CH) + 'px';
+        clone.style.width = CW + 'px';
+        clone.style.height = CH + 'px';
+        clone.style.transformOrigin = '50% 85%';
+        clone.style.transform = T_IN;
+        clone.style.opacity = '0';
+        clone.style.transition = 'transform .42s cubic-bezier(.2,.85,.25,1), opacity .25s ease';
+        layer.appendChild(clone);
+
+        book.classList.add('fly-source');
+        active = book;
+
+        // 双帧确保初始样式已渲染，再触发过渡动画
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                if (clone) {
+                    clone.style.transform = T_OUT;
+                    clone.style.opacity = '1';
+                }
+            });
+        });
+    }
+
+    function close() {
+        if (!active) return;
+        var book = active;
+        var c = clone;
+        active = null;
+        clone = null;
+        book.classList.remove('fly-source');
+        if (c) {
+            c.style.transform = T_IN;
+            c.style.opacity = '0';
+            setTimeout(function () {
+                if (c.parentNode) c.parentNode.removeChild(c);
+            }, 450);
+        }
+    }
+
+    var canHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
     books.forEach(function (book) {
+        if (canHover) {
+            book.addEventListener('mouseenter', function () { fly(book); });
+            book.addEventListener('mouseleave', function () { close(); });
+        }
         book.addEventListener('click', function (e) {
-            // 已翻开的是这本 -> 放行跳转
+            // 窄屏：第一次点飞出封面；再点同一本放行跳转
             if (active === book) return;
-            // 其它情况：阻止跳转，改为翻出封面
             e.preventDefault();
-            if (active) active.classList.remove('is-open');
-            book.classList.add('is-open');
-            active = book;
+            fly(book);
         });
     });
 
-    // 点击书架外空白处收起封面
+    // 点击空白处 / Esc 收起封面
     document.addEventListener('click', function (e) {
-        if (active && !active.contains(e.target)) {
-            active.classList.remove('is-open');
-            active = null;
-        }
+        if (active && !active.contains(e.target)) close();
     });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') close();
+    });
+    // 滚动后上层封面的定位会与书脱节，直接收起
+    window.addEventListener('scroll', close, { passive: true });
+    var shelf = document.querySelector('.bookshelf');
+    if (shelf) shelf.addEventListener('scroll', close, { passive: true });
 })();
