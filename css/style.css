@@ -524,6 +524,8 @@ body{
     .book:focus-visible .book-cover{
         transform:translateY(-46px) rotateY(-10deg) rotateZ(-3deg) scale(1.3);
         opacity:1;
+        pointer-events:auto;                /* 封面飞出后可接收点击，点击落到父级 <a> 的小说链接 */
+        cursor:pointer;
     }
 }
 /* 窄屏封面飞出上层：不受书架滚动裁切，复刻桌面 hover 的封面样式 */
@@ -539,6 +541,8 @@ body{
     box-shadow:0 12px 22px rgba(0,0,0,.7), 0 0 0 2px #7d5a30, inset 0 0 0 1px rgba(255,255,255,.15);
     background:#1c1208;
     backface-visibility:hidden;
+    pointer-events:auto;                /* 飞出的封面可点击，跳到对应小说链接 */
+    cursor:pointer;
 }
 .flying-cover img{ display:block; width:100%; height:100%; object-fit:cover; }
 /* 飞出期间原书暂时隐去（仍占位、仍可交互） */

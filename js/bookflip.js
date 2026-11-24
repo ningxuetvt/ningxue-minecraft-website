@@ -23,10 +23,10 @@
         books.forEach(function (b) { b.classList.remove('fly-source'); });
     }
 
-    // 与 CSS 中 .book-cover 一致：78×112，初始贴书脊侧转收拢，飞出后翻正放大 30%
+    // 与 CSS 中 .book-cover 一致：78×112，初始贴书脊侧转收拢，飞出后翻正放大 20%
     var CW = 78, CH = 112;
     var T_IN = 'perspective(760px) translateY(14px) rotateY(-92deg) scale(.35)';
-    var T_OUT = 'perspective(760px) translateY(-46px) rotateY(-10deg) rotateZ(-3deg) scale(1.3)';
+    var T_OUT = 'perspective(760px) translateY(-46px) rotateY(-10deg) rotateZ(-3deg) scale(1.2)';
 
     function fly(book) {
         if (active === book) return;
@@ -39,8 +39,12 @@
         if (!img || !layer) return;
         var r = book.getBoundingClientRect();
 
-        clone = document.createElement('div');
+        clone = document.createElement('a');
         clone.className = 'flying-cover';
+        clone.href = book.getAttribute('href');
+        clone.target = '_blank';
+        clone.rel = 'noopener noreferrer';
+        clone.setAttribute('aria-label', book.getAttribute('title') || img.alt || '');
         var ci = document.createElement('img');
         ci.src = img.src;
         ci.alt = img.alt || '';
@@ -79,6 +83,7 @@
         clone = null;
         if (fadeTimer) { clearTimeout(fadeTimer); fadeTimer = null; }
         if (c) {
+            c.style.pointerEvents = 'none';   // 收起淡出期间不再响应点击，交互只在弹出时生效
             c.style.transform = T_IN;
             c.style.opacity = '0';
             // 克隆淡出并移除后才让原书恢复可见，消除“原书 + 克隆”双可见窗口
