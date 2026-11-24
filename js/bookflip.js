@@ -23,10 +23,10 @@
         books.forEach(function (b) { b.classList.remove('fly-source'); });
     }
 
-    // 与 CSS 中 .book-cover 一致：78×112，初始贴书脊侧转收拢，飞出后翻正放大 20%
+    // 与 CSS 中 .book-cover 一致：78×112，初始贴书脊侧转收拢，飞出后翻正放大 10%
     var CW = 78, CH = 112;
     var T_IN = 'perspective(760px) translateY(14px) rotateY(-92deg) scale(.35)';
-    var T_OUT = 'perspective(760px) translateY(-46px) rotateY(-10deg) rotateZ(-3deg) scale(1.2)';
+    var T_OUT = 'perspective(760px) translateY(-46px) rotateY(-10deg) rotateZ(-3deg) scale(1.1)';
 
     function fly(book) {
         if (active === book) return;

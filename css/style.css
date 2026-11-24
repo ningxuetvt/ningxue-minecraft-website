@@ -490,6 +490,7 @@ body{
     .book:hover .book-spine,
     .book:focus-visible .book-spine{
         opacity:0;
+        transition:opacity .2s ease;    /* 悬停时书脊隐去仍用原速，只有移开恢复变快 */
     }
 }
 /* 飞出的封面：初始贴在书脊后方、侧转收拢并隐藏 */
@@ -560,7 +561,7 @@ body{
     color:var(--mc-gold);
     text-shadow:1px 1px 0 #000;
     pointer-events:none;
-    transition:opacity .2s ease;
+    transition:opacity .08s ease;       /* 移开鼠标时书脊快速出现 */
 }
 .book-spine i{ display:block; font-style:normal; }
 /* 长书名缩小字号，保证 5～6 字竖排不超出书脊高度 */
@@ -773,9 +774,11 @@ body{
     color:#f2dd96;
     text-shadow:1px 1px 0 #2a1a08;
 }
-/* 只在"能横滑、且还没滑过"的时候出现，由 ui.js 挂 .is-idle */
+/* 只在"能横滑、且还没滑过"的时候显示，由 ui.js 挂 .is-idle。
+   始终占位（display:block），仅切 visibility：字幕隐去时不改变排版，下方区域位置不变 */
 @media (max-width:640px){
-    .shelf-hint.is-idle{ display:block; }
+    .shelf-hint{ display:block; visibility:hidden; }
+    .shelf-hint.is-idle{ visibility:visible; }
 }
 
 /* ---------- 交友：二维码 + 可复制的 IG ID ---------- */
